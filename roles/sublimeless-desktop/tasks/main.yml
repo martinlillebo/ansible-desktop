@@ -1,0 +1,24 @@
+#- name: Laster ned sublimeless-release fra Renés repo
+#  ansible.builtin.get_url:
+#    url: https://github.com/renerocksai/sublimeless_zk/releases/download/sublimeless_zk-pre-0.9/sublimeless_zk-pre-0.9-linux.tar.gz
+#    dest: '~/sublimeless_zk-pre-0.9-linux.tar.gz'
+
+#- name: Creating the /usr/local/bin/sublimeless folder
+#  ansible.builtin.file:
+#    path: ~/Downloads/sublimeless
+#    state: directory
+#
+
+- name: Laster ned Renés Sublimeless-release og pakker den ut 
+  ansible.builtin.unarchive:
+    src: https://github.com/renerocksai/sublimeless_zk/releases/download/sublimeless_zk-pre-0.9/sublimeless_zk-pre-0.9-linux.tar.gz
+    dest: ~/Downloads/
+    remote_src: yes
+    creates: ~/Downloads/sublimeless_zk-pre-0.9-linux/ 
+
+
+- name: Kopierer sublimeless .desktop-filen til ~/.local/share/applications
+  copy:
+    src: sublimeless.desktop
+    dest: ~/.local/share/applications
+

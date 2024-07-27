@@ -1,0 +1,7 @@
+- name: Kopierer inn gnome-hurtigtaster.txt
+  copy:
+    src: gnome-hurtigtaster.txt
+    dest: /tmp/gnome-hurtigtaster.txt
+
+- name: Legger gnome-hurtigtaster.txt inn i GNOME config
+  ansible.builtin.shell: dbus-run-session -- dconf load /org/gnome/settings-daemon/plugins/media-keys/ < /tmp/gnome-hurtigtaster.txt

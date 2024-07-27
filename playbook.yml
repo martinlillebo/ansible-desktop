@@ -1,0 +1,179 @@
+- name: Debian desktop config
+  hosts: all
+  gather_facts: yes
+  become: no
+  vars:
+    github_username: "martinlillebo"
+#  vars_prompt:
+#    - name: github_username
+#      prompt: GitHub-brukernavn
+#      private: false
+#    - name: github_access_token
+#      prompt: Lim inn GitHub access token (ctrl + shift + V)
+#      private: true
+
+  tasks:
+
+  - name: Inkluderer variabler
+    ansible.builtin.include_vars: secret-vars.yml
+
+  - name: Legger inn AutoKey-config
+    import_role:
+      name: autokey-config
+
+  - name: apt update og apt upgrade
+    become: yes
+    ansible.builtin.apt:
+      update_cache: yes
+      cache_valid_time: 3600 # hopper over update_cache om den er under en time gammel
+      upgrade: yes
+
+  - name: enabler autologin
+    become: yes
+    lineinfile:
+      path: /etc/gdm3/daemon.conf
+      regexp: '^#\s*AutomaticLoginEnable\s*=\s*true'
+      line: 'AutomaticLoginEnable = true'
+      backrefs: yes
+
+  - name: angir autologin-brukernavn
+    become: yes
+    lineinfile:
+      path: /etc/gdm3/daemon.conf
+      regexp: '^#\s*AutomaticLogin\s*='
+      line: "AutomaticLogin = {{ ansible_facts['env']['USER'] }}"
+      backrefs: yes
+
+#  - name: Alle facts
+#    ansible.builtin.debug:
+#      var: ansible_facts
+
+#  - name: printtest
+#    ansible.builtin.debug:
+#      msg: "Current user: {{ ansible_facts['env']['USER'] }}"
+
+  - name: Importerer GNOME-hurtigtaster
+    import_role:
+      name: gnome-hurtigtaster
+
+  - name: Legger inn sublimeless .desktop til ./local/share/applications
+    import_role:
+      name: sublimeless-desktop
+
+  
+  - name: Installerer masse programmer
+    become: yes
+    ansible.builtin.apt:
+      state: present
+      name:
+        - virt-manager          # Til KVM
+        - qemu-system           # Til KVM
+        - libvirt-daemon-system # Til KVM
+        - flatpak
+        - git
+        - curl
+        - htop
+        - python3-pip
+        - python3-venv
+        - less
+        - lshw
+        - nano
+        - tmux
+        - tree
+        - usbutils
+        - ufw
+        - yamllint
+        - net-tools
+        - ncat
+        - ethtool
+        - host
+        - ncdu
+        - screenkey
+        - autokey-gtk # Autokey til GNOME
+
+# Gir opp flathub midlertidig
+
+#  - name: Add the flathub flatpak repository remote to the user installation
+#    community.general.flatpak_remote:
+#      name: flathub
+#      state: present
+#      flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+#      method: user
+
+#  - name: INstallerer GIMP fra Flathub
+#    community.general.flatpak:
+#      name: org.gimp.GIMP
+#      state: present    
+#      method: user
+
+
+  - name: Oppretter "~/notater/" om den ikke fins fra før
+#   become_user: "{{ ansible_facts['env']['SUDO_USER'] }}"
+    ansible.builtin.file:
+      path: "~/notater"
+      state: directory
+    
+  - name: Kopierer inn notatblokka
+    ansible.builtin.git:
+      repo: "https://{{ github_username }}:{{ github_access_token }}@github.com/martinlillebo/notater.git"
+      dest: "{{ ansible_env.HOME }}/notater"
+      version: master
+
+#  - name: Laster ned sublimeless
+
+
+  - name: Setter rett tidssone
+    community.general.timezone:
+      name: Europe/Oslo
+
+#  - name: Setter opp dotfiler og konfigurerer
+#  - name: Konfigurerer .bashrc
+#  - name: 
+
+  - name: Laster ned Discord (.deb) til /tmp
+    get_url:
+      url: https://discord.com/api/download?platform=linux&format=deb
+      dest: /tmp/discord.deb
+    tags: download
+
+  - name: Installerer Discord fra .deb-fila
+    become: yes
+    apt:
+      deb: /tmp/discord.deb
+    tags: install
+
+
+
+  - name: Laster ned VS Code (.deb) til /tmp
+    get_url:
+      url: https://go.microsoft.com/fwlink/?LinkID=760868
+      dest: /tmp/vscode.deb
+    tags: download
+
+  - name: Installerer VS Code fra .deb-fila
+    become: yes
+    apt:
+      deb: /tmp/vscode.deb
+    tags: install
+
+  - name: Laster ned Steam (.deb) til /tmp
+    get_url:
+      url: https://cdn.akamai.steamstatic.com/client/installer/steam.deb
+      dest: /tmp/steam.deb
+    tags: download
+
+  - name: Installerer Steam fra .deb-fila
+    become: yes
+    apt:
+      deb: /tmp/steam.deb
+    tags: install
+
+
+## Forebygger feilmeldingen "fatal: Need to specify how to reconcile divergent branches" 
+## som Git spør om hvis jeg trekker ned et repo med "divergent branches"
+  - name: Git configuration
+    community.general.git_config:
+      name: pull.rebase
+      scope: global
+      value: 'false'
+

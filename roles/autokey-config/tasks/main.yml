@@ -1,0 +1,4 @@
+- name: Omgjør Caps Lock-tasten til vanlig konfigurerbar autokey-tast
+  copy:
+    src: .xmodmap
+    dest: ~/.xmodmap
