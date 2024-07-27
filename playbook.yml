@@ -56,9 +56,10 @@
     import_role:
       name: gnome-hurtigtaster
 
-  - name: Legger inn sublimeless .desktop til ./local/share/applications
-    import_role:
-      name: sublimeless-desktop
+#  FJerner midlertidig for å spare tid
+#  - name: Legger inn sublimeless .desktop til ./local/share/applications
+#    import_role:
+#      name: sublimeless-desktop
 
   
   - name: Installerer masse programmer
@@ -90,6 +91,30 @@
         - ncdu
         - screenkey
         - autokey-gtk # Autokey til GNOME
+        - zsh
+
+  - name: Setter Zsh som standard skall
+    become: true
+    ansible.builtin.user:
+      name: "{{ ansible_facts['env']['USER'] }}"
+      shell: /bin/zsh
+
+  - name: Sjekker om Oh My Zsh er installert ennå
+    stat:
+      path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+    register: ohmyzsh_installed
+
+  - name: Laster ned OMZ installasjonsskript
+    get_url:
+      url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+      dest: /tmp/install_ohmyzsh.sh
+    when: not ohmyzsh_installed.stat.exists
+
+  - name: Installerer OMZ
+    command: sh /tmp/install_ohmyzsh.sh --unattended
+    register: ohmyzsh_result
+    failed_when: "'FAILED' in ohmyzsh_result.stderr"
+    when: not ohmyzsh_installed.stat.exists
 
 # Gir opp flathub midlertidig
 
@@ -106,29 +131,54 @@
 #      state: present    
 #      method: user
 
-
-  - name: Oppretter "~/notater/" om den ikke fins fra før
-#   become_user: "{{ ansible_facts['env']['SUDO_USER'] }}"
+  - name: Oppretter "~/repos/notater/" 
     ansible.builtin.file:
-      path: "~/notater"
+      path: "~/repos/notater"
       state: directory
     
   - name: Kopierer inn notatblokka
     ansible.builtin.git:
       repo: "https://{{ github_username }}:{{ github_access_token }}@github.com/martinlillebo/notater.git"
-      dest: "{{ ansible_env.HOME }}/notater"
+      dest: "{{ ansible_env.HOME }}/repos/notater"
       version: master
 
-#  - name: Laster ned sublimeless
+  - name: Oppretter "~/repos/dotfiler/" 
+    ansible.builtin.file:
+      path: "~/repos/notater"
+      state: directory
 
+  - name: Kopierer inn dotfilene
+    ansible.builtin.git:
+      repo: "https://github.com/martinlillebo/dotfiler.git"
+      dest: "{{ ansible_env.HOME }}/repos/dotfiler"
+      version: master
+
+  - name: Sletter original .zshrc
+    ansible.builtin.file:
+      path: ~/.zshrc
+      state: absent
+
+  - name: symlenker .zshrc
+    ansible.builtin.file:
+      src: ~/repos/dotfiler/.zshrc
+      dest: ~/.zshrc
+      state: link
+
+  - name: symlenker .vimrc
+    ansible.builtin.file:
+      src: ~/repos/dotfiler/.vimrc
+      dest: ~/.vimrc
+      state: link
+
+  - name: symlenker .nanorc
+    ansible.builtin.file:
+      src: ~/repos/dotfiler/.nanorc
+      dest: ~/.nanorc
+      state: link
 
   - name: Setter rett tidssone
     community.general.timezone:
       name: Europe/Oslo
-
-#  - name: Setter opp dotfiler og konfigurerer
-#  - name: Konfigurerer .bashrc
-#  - name: 
 
   - name: Laster ned Discord (.deb) til /tmp
     get_url:
