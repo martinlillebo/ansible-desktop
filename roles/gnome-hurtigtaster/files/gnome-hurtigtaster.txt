@@ -1,7 +1,12 @@
 [/]
-custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/']
 
 [custom-keybindings/custom0]
 binding='<Super>e'
 command='/usr/bin/nautilus'
 name='Nautilus'
+
+[custom-keybindings/custom1]
+binding='<Super>t'
+command='/usr/bin/gnome-terminal'
+name='Terminal'

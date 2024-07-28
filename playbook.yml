@@ -1,5 +1,5 @@
 - name: Debian desktop config
-  hosts: all
+  hosts: localhost
   gather_facts: yes
   become: no
   vars:
@@ -180,44 +180,62 @@
     community.general.timezone:
       name: Europe/Oslo
 
+  - name: Sjekker om Discord er installert
+    stat:
+      path: /usr/bin/discord
+    register: discord_installed
+
   - name: Laster ned Discord (.deb) til /tmp
     get_url:
       url: https://discord.com/api/download?platform=linux&format=deb
       dest: /tmp/discord.deb
     tags: download
+    when: not discord_installed.stat.exists
 
   - name: Installerer Discord fra .deb-fila
     become: yes
     apt:
       deb: /tmp/discord.deb
     tags: install
+    when: not discord_installed.stat.exists
 
-
+  - name: Sjekker om VSCode er installert
+    stat:
+      path: /usr/bin/code
+    register: vscode_installed
 
   - name: Laster ned VS Code (.deb) til /tmp
     get_url:
       url: https://go.microsoft.com/fwlink/?LinkID=760868
       dest: /tmp/vscode.deb
     tags: download
+    when: not vscode_installed.stat.exists
 
   - name: Installerer VS Code fra .deb-fila
     become: yes
     apt:
       deb: /tmp/vscode.deb
     tags: install
+    when: not vscode_installed.stat.exists
+  
+  - name: Sjekker om Steam er installert
+    stat:
+      path: /usr/bin/steam
+    register: steam_installed
 
   - name: Laster ned Steam (.deb) til /tmp
     get_url:
       url: https://cdn.akamai.steamstatic.com/client/installer/steam.deb
       dest: /tmp/steam.deb
     tags: download
+    when: not steam_installed.stat.exists
 
   - name: Installerer Steam fra .deb-fila
     become: yes
     apt:
       deb: /tmp/steam.deb
     tags: install
-
+    when: not steam_installed.stat.exists
 
 ## Forebygger feilmeldingen "fatal: Need to specify how to reconcile divergent branches" 
 ## som Git spør om hvis jeg trekker ned et repo med "divergent branches"
