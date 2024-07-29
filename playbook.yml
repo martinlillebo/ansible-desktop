@@ -28,40 +28,19 @@
       cache_valid_time: 3600 # hopper over update_cache om den er under en time gammel
       upgrade: yes
 
-  - name: enabler autologin
-    become: yes
-    lineinfile:
-      path: /etc/gdm3/daemon.conf
-      regexp: '^#\s*AutomaticLoginEnable\s*=\s*true'
-      line: 'AutomaticLoginEnable = true'
-      backrefs: yes
-
-  - name: angir autologin-brukernavn
-    become: yes
-    lineinfile:
-      path: /etc/gdm3/daemon.conf
-      regexp: '^#\s*AutomaticLogin\s*='
-      line: "AutomaticLogin = {{ ansible_facts['env']['USER'] }}"
-      backrefs: yes
-
-#  - name: Alle facts
-#    ansible.builtin.debug:
-#      var: ansible_facts
-
-#  - name: printtest
-#    ansible.builtin.debug:
-#      msg: "Current user: {{ ansible_facts['env']['USER'] }}"
-
   - name: Importerer GNOME-hurtigtaster
     import_role:
       name: gnome-hurtigtaster
+
+  - name: Setter GNOME-klokka til å vise sekunder
+    command: gsettings set org.gnome.desktop.interface clock-show-seconds true
+    changed_when: false  # Ensure the task does not always report as changed
 
 #  FJerner midlertidig for å spare tid
 #  - name: Legger inn sublimeless .desktop til ./local/share/applications
 #    import_role:
 #      name: sublimeless-desktop
 
-  
   - name: Installerer masse programmer
     become: yes
     ansible.builtin.apt:
@@ -116,20 +95,11 @@
     failed_when: "'FAILED' in ohmyzsh_result.stderr"
     when: not ohmyzsh_installed.stat.exists
 
-# Gir opp flathub midlertidig
-
-#  - name: Add the flathub flatpak repository remote to the user installation
-#    community.general.flatpak_remote:
-#      name: flathub
-#      state: present
-#      flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
-#      method: user
-
-#  - name: INstallerer GIMP fra Flathub
-#    community.general.flatpak:
-#      name: org.gimp.GIMP
-#      state: present    
-#      method: user
+  - name: Henter Git-repoet som gir syntaksmarkering i Zsh
+    ansible.builtin.git:
+      repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+      dest: ~/zsh-syntax-highlighting
+      update: yes
 
   - name: Oppretter "~/repos/notater/" 
     ansible.builtin.file:
@@ -245,3 +215,45 @@
       scope: global
       value: 'false'
 
+
+
+## Droppet
+
+#  - name: enabler autologin
+#    become: yes
+#    lineinfile:
+#      path: /etc/gdm3/daemon.conf
+#      regexp: '^#\s*AutomaticLoginEnable\s*=\s*true'
+#      line: 'AutomaticLoginEnable = true'
+#      backrefs: yes
+
+#  - name: angir autologin-brukernavn
+#    become: yes
+#    lineinfile:
+#      path: /etc/gdm3/daemon.conf
+#      regexp: '^#\s*AutomaticLogin\s*='
+#      line: "AutomaticLogin = {{ ansible_facts['env']['USER'] }}"
+#      backrefs: yes
+
+#  - name: Alle facts
+#    ansible.builtin.debug:
+#      var: ansible_facts
+
+#  - name: printtest
+#    ansible.builtin.debug:
+#      msg: "Current user: {{ ansible_facts['env']['USER'] }}"
+
+# Gir opp flathub midlertidig
+
+#  - name: Add the flathub flatpak repository remote to the user installation
+#    community.general.flatpak_remote:
+#      name: flathub
+#      state: present
+#      flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+#      method: user
+
+#  - name: INstallerer GIMP fra Flathub
+#    community.general.flatpak:
+#      name: org.gimp.GIMP
+#      state: present    
+#      method: user
