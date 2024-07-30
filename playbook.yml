@@ -1,5 +1,5 @@
 - name: Debian desktop config
-  hosts: localhost
+  hosts: vm
   gather_facts: yes
   become: no
   vars:
@@ -72,6 +72,34 @@
         - autokey-gtk # Autokey til GNOME
         - zsh
 
+  - name: Git-config
+    community.general.git_config:
+      name: pull.rebase
+      scope: global
+      value: 'false'
+
+  - name: Oppretter "~/repos/notater/" 
+    ansible.builtin.file:
+      path: "~/repos/notater"
+      state: directory
+
+  - name: Sjekker om notatblokka fins
+    stat:
+      path: "{{ ansible_env.HOME }}/repos/notater/.git/"
+    register: notater_fins
+
+  - name: Kopierer inn notatblokka
+    ansible.builtin.git:
+      repo: "https://{{ github_username }}:{{ github_access_token }}@github.com/martinlillebo/notater.git"
+      dest: "{{ ansible_env.HOME }}/repos/notater"
+      version: master
+    when: not notater_fins.stat.exists
+
+  - name: Sjekker om ~/.ssh fins
+    stat:
+      path: "{{ ansible_env.HOME }}/.ssh/"
+    register: ssh_fins
+
   - name: Setter Zsh som standard skall
     become: true
     ansible.builtin.user:
@@ -101,17 +129,6 @@
       dest: ~/zsh-syntax-highlighting
       update: yes
 
-  - name: Oppretter "~/repos/notater/" 
-    ansible.builtin.file:
-      path: "~/repos/notater"
-      state: directory
-    
-  - name: Kopierer inn notatblokka
-    ansible.builtin.git:
-      repo: "https://{{ github_username }}:{{ github_access_token }}@github.com/martinlillebo/notater.git"
-      dest: "{{ ansible_env.HOME }}/repos/notater"
-      version: master
-
   - name: Oppretter "~/repos/dotfiler/" 
     ansible.builtin.file:
       path: "~/repos/notater"
@@ -123,16 +140,23 @@
       dest: "{{ ansible_env.HOME }}/repos/dotfiler"
       version: master
 
+  - name: Sjekker om ~/.zshrc er en symlenke
+    ansible.builtin.stat:
+      path: ~/.zshrc
+    register: zshrc_stat    
+
   - name: Sletter original .zshrc
     ansible.builtin.file:
       path: ~/.zshrc
       state: absent
+    when: not zshrc_stat.stat.islnk
 
   - name: symlenker .zshrc
     ansible.builtin.file:
       src: ~/repos/dotfiler/.zshrc
       dest: ~/.zshrc
       state: link
+    when: not zshrc_stat.stat.islnk
 
   - name: symlenker .vimrc
     ansible.builtin.file:
@@ -150,72 +174,65 @@
     community.general.timezone:
       name: Europe/Oslo
 
-  - name: Sjekker om Discord er installert
-    stat:
-      path: /usr/bin/discord
-    register: discord_installed
-
-  - name: Laster ned Discord (.deb) til /tmp
-    get_url:
-      url: https://discord.com/api/download?platform=linux&format=deb
-      dest: /tmp/discord.deb
-    tags: download
-    when: not discord_installed.stat.exists
-
-  - name: Installerer Discord fra .deb-fila
-    become: yes
-    apt:
-      deb: /tmp/discord.deb
-    tags: install
-    when: not discord_installed.stat.exists
-
-  - name: Sjekker om VSCode er installert
-    stat:
-      path: /usr/bin/code
-    register: vscode_installed
-
-  - name: Laster ned VS Code (.deb) til /tmp
-    get_url:
-      url: https://go.microsoft.com/fwlink/?LinkID=760868
-      dest: /tmp/vscode.deb
-    tags: download
-    when: not vscode_installed.stat.exists
-
-  - name: Installerer VS Code fra .deb-fila
-    become: yes
-    apt:
-      deb: /tmp/vscode.deb
-    tags: install
-    when: not vscode_installed.stat.exists
-  
-  - name: Sjekker om Steam er installert
-    stat:
-      path: /usr/bin/steam
-    register: steam_installed
-
-  - name: Laster ned Steam (.deb) til /tmp
-    get_url:
-      url: https://cdn.akamai.steamstatic.com/client/installer/steam.deb
-      dest: /tmp/steam.deb
-    tags: download
-    when: not steam_installed.stat.exists
-
-  - name: Installerer Steam fra .deb-fila
-    become: yes
-    apt:
-      deb: /tmp/steam.deb
-    tags: install
-    when: not steam_installed.stat.exists
+#  - name: Sjekker om Discord er installert
+#    stat:
+#      path: /usr/bin/discord
+#    register: discord_installed
+#
+#  - name: Laster ned Discord (.deb) til /tmp
+#    get_url:
+#      url: https://discord.com/api/download?platform=linux&format=deb
+#      dest: /tmp/discord.deb
+#    tags: download
+#    when: not discord_installed.stat.exists
+#
+#  - name: Installerer Discord fra .deb-fila
+#    become: yes
+#    apt:
+#      deb: /tmp/discord.deb
+#    tags: install
+#    when: not discord_installed.stat.exists
+#
+#  - name: Sjekker om VSCode er installert
+#    stat:
+#      path: /usr/bin/code
+#    register: vscode_installed
+#
+#  - name: Laster ned VS Code (.deb) til /tmp
+#    get_url:
+#      url: https://go.microsoft.com/fwlink/?LinkID=760868
+#      dest: /tmp/vscode.deb
+#    tags: download
+#    when: not vscode_installed.stat.exists
+#
+#  - name: Installerer VS Code fra .deb-fila
+#    become: yes
+#    apt:
+#      deb: /tmp/vscode.deb
+#    tags: install
+#    when: not vscode_installed.stat.exists
+#  
+#  - name: Sjekker om Steam er installert
+#    stat:
+#      path: /usr/bin/steam
+#    register: steam_installed
+#
+#  - name: Laster ned Steam (.deb) til /tmp
+#    get_url:
+#      url: https://cdn.akamai.steamstatic.com/client/installer/steam.deb
+#      dest: /tmp/steam.deb
+#    tags: download
+#    when: not steam_installed.stat.exists
+#
+#  - name: Installerer Steam fra .deb-fila
+#    become: yes
+#    apt:
+#      deb: /tmp/steam.deb
+#    tags: install
+#    when: not steam_installed.stat.exists
 
 ## Forebygger feilmeldingen "fatal: Need to specify how to reconcile divergent branches" 
 ## som Git spør om hvis jeg trekker ned et repo med "divergent branches"
-  - name: Git configuration
-    community.general.git_config:
-      name: pull.rebase
-      scope: global
-      value: 'false'
-
-
 
 ## Droppet
 
