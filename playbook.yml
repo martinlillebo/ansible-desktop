@@ -28,15 +28,7 @@
       cache_valid_time: 3600 # hopper over update_cache om den er under en time gammel
       upgrade: yes
 
-  - name: Importerer GNOME-hurtigtaster
-    import_role:
-      name: gnome-hurtigtaster
-
-  - name: Setter GNOME-klokka til å vise sekunder
-    command: gsettings set org.gnome.desktop.interface clock-show-seconds true
-    changed_when: false  # Ensure the task does not always report as changed
-
-#  FJerner midlertidig for å spare tid
+#  Fjerner midlertidig for å spare tid
 #  - name: Legger inn sublimeless .desktop til ./local/share/applications
 #    import_role:
 #      name: sublimeless-desktop
@@ -71,6 +63,31 @@
         - screenkey
         - autokey-gtk # Autokey til GNOME
         - zsh
+        - python3-psutil # Avhengighet til community.general.dconf. Burde ligge i venv
+
+
+  - name: Importerer GNOME-hurtigtaster
+    import_role:
+      name: gnome-hurtigtaster
+
+  - name: Setter GNOME-klokka til å vise sekunder
+    command: gsettings set org.gnome.desktop.interface clock-show-seconds true
+    changed_when: false  # Ensure the task does not always report as changed
+
+  - name: GNOME - Enabler touchpad tap-to-click
+    community.general.dconf:
+      key: /org/gnome/desktop/peripherals/touchpad/tap-to-click
+      value: 'true'
+
+  - name: Skrur av event sounds
+    community.general.dconf:
+      key: /org/gnome/desktop/sound/event-sounds
+      value: 'false'
+
+  - name: Skrur på visning av skjulte filer i GUI
+    dconf:
+      key: /org/gtk/gtk4/settings/file-chooser/show-hidden
+      value: 'true'
 
   - name: Git-config
     community.general.git_config:
