@@ -38,33 +38,33 @@
     ansible.builtin.apt:
       state: present
       name:
-        - virt-manager          # Til KVM
-        - qemu-system           # Til KVM
-        - libvirt-daemon-system # Til KVM
+#        - virt-manager          # Til KVM
+#        - qemu-system           # Til KVM
+#        - libvirt-daemon-system # Til KVM
         - flatpak
         - git
         - curl
-        - htop
+#        - htop
         - python3-pip
         - python3-venv
-        - less
-        - lshw
-        - nano
-        - tmux
-        - tree
-        - usbutils
-        - ufw
-        - yamllint
-        - net-tools
-        - ncat
-        - ethtool
-        - host
-        - ncdu
-        - screenkey
+#        - less
+#        - lshw
+#        - nano
+#        - tmux
+#        - tree
+#        - usbutils
+#        - ufw
+#        - yamllint
+#        - net-tools
+#        - ncat
+#        - ethtool
+#        - host
+#        - ncdu
+#        - screenkey
         - autokey-gtk # Autokey til GNOME
         - zsh
         - python3-psutil # Avhengighet til community.general.dconf. Burde ligge i venv
-
+#       - vlc
 
   - name: Importerer GNOME-hurtigtaster
     import_role:
@@ -116,6 +116,9 @@
     stat:
       path: "{{ ansible_env.HOME }}/.ssh/"
     register: ssh_fins
+  
+#  - name: Oppretter privat SSH-nøkkel
+
 
   - name: Setter Zsh som standard skall
     become: true
@@ -190,6 +193,8 @@
   - name: Setter rett tidssone
     community.general.timezone:
       name: Europe/Oslo
+
+
 
 #  - name: Sjekker om Discord er installert
 #    stat:
