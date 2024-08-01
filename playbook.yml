@@ -65,6 +65,7 @@
         - zsh
         - python3-psutil # Avhengighet til community.general.dconf. Burde ligge i venv
         - vlc
+        - shutter
 
   - name: Importerer GNOME-hurtigtaster
     import_role:
