@@ -2,11 +2,6 @@
   command: gsettings set org.gnome.desktop.interface clock-show-seconds true
   changed_when: false  # Ensure the task does not always report as changed
 
-- name: Sjekker om gnome-hurtigtaster.txt er kopiert inn allerede
-  stat:
-    path: "/tmp/gnome-hurtigtaster.txt"
-  register: 
-
 - name: Kopierer inn gnome-hurtigtaster.txt
   copy:
     src: gnome-hurtigtaster.txt
@@ -16,7 +11,6 @@
 - name: Legger gnome-hurtigtaster.txt inn i GNOME config
   ansible.builtin.shell: dbus-run-session -- dconf load /org/gnome/settings-daemon/plugins/media-keys/ < /tmp/gnome-hurtigtaster.txt
   when: hurtigtaster_ble_kopiert_inn.changed
-
 
 - name: GNOME - Enabler touchpad tap-to-click
   community.general.dconf:
@@ -31,4 +25,9 @@
 - name: Skrur på visning av skjulte filer i GUI
   dconf:
     key: /org/gtk/gtk4/settings/file-chooser/show-hidden
+    value: 'true'
+
+- name: Skrur på ukenummer i kalenderen
+  dconf:
+    key: /org/gnome/desktop/calendar/show-weekdate
     value: 'true'
