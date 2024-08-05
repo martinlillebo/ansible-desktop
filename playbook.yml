@@ -14,6 +14,37 @@
 
   tasks:
 
+  - name: Legger til locale en_US.UTF-8
+    become: true
+    locale_gen:
+      name: en_US.UTF-8
+      state: present
+    register: locale
+
+  - name: Legger til locale C
+    become: true
+    locale_gen:
+      name: C
+      state: present
+    register: locale
+
+  - name: Legger til locale en_DK.UTF-8
+    become: true
+    locale_gen:
+      name: en_DK.UTF-8
+      state: present
+    register: locale
+
+  - name: setter LC_TIME=en_DK
+    become: yes
+    command: localectl set-locale LC_TIME=en_DK.UTF-8
+    when: locale.changed  
+
+  - name: setter LC_MESSAGES=C
+    become: yes
+    command: localectl set-locale LC_MESSAGES=C
+    when: locale.changed
+
   - name: Inkluderer variabler
     ansible.builtin.include_vars: secret-vars.yml
 
@@ -38,34 +69,85 @@
     ansible.builtin.apt:
       state: present
       name:
-#        - virt-manager          # Til KVM
-#        - qemu-system           # Til KVM
-#        - libvirt-daemon-system # Til KVM
+        - virt-manager          # Til KVM
+        - qemu-system           # Til KVM
+        - libvirt-daemon-system # Til KVM
         - flatpak
         - git
         - curl
-#        - htop
+        - htop
         - python3-pip
         - python3-venv
-#        - less
-#        - lshw
-#        - nano
-#        - tmux
-#        - tree
-#        - usbutils
-#        - ufw
-#        - yamllint
-#        - net-tools
-#        - ncat
-#        - ethtool
-#        - host
-#        - ncdu
+        - less
+        - lshw
+        - nano
+        - tmux
+        - tree
+        - usbutils
+        - ufw
+        - yamllint
+        - net-tools
+        - ncat
+        - ethtool
+        - host
+        - ncdu
         - screenkey
         - autokey-gtk # Autokey til GNOME
         - zsh
         - python3-psutil # Avhengighet til community.general.dconf. Burde ligge i venv
         - vlc
         - shutter
+        - jq
+        - neofetch
+
+  - name: Add Flathub repository
+    become: yes
+    community.general.flatpak_remote:
+      name: flathub
+      state: present
+      flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+
+  - name: Installerer Spotify fra Flathub
+    become: yes
+    community.general.flatpak:
+      name:  com.spotify.Client
+      state: present
+
+  - name: Installerer Slack fra Flathub
+    become: yes
+    community.general.flatpak:
+      name:  com.slack.Slack
+      state: present
+
+  - name: Installerer Discord fra Flathub
+    become: yes
+    community.general.flatpak:
+      name:  com.discordapp.Discord
+      state: present
+
+  - name: Installerer GIMP fra Flathub
+    become: yes
+    community.general.flatpak:
+      name: org.gimp.GIMP
+      state: present    
+
+  - name: Installerer Steam fra Flathub
+    become: yes
+    community.general.flatpak:
+      name: com.valvesoftware.Steam
+      state: present    
+
+  - name: Installerer VSCode fra Flathub
+    become: yes
+    community.general.flatpak:
+      name: com.visualstudio.code
+      state: present    
+
+#  - name: Installerer XX fra Flathub
+#    become: yes
+#    community.general.flatpak:
+#      name: 
+#      state: present    
 
   - name: Importerer GNOME-hurtigtaster
     import_role:
@@ -76,6 +158,29 @@
       name: pull.rebase
       scope: global
       value: 'false'
+
+  - name: Setter global Git user.name
+    community.general.git_config:
+      name: user.name
+      value: "Martin Lillebo"
+      scope: global
+
+  - name: Setter global Git user.email
+    community.general.git_config:
+      name: user.email
+      value: "{{ e_mail_address }}"
+      scope: global
+
+#You can suppress this message by setting them explicitly:
+#
+#    git config --global user.name "Your Name"
+#    git config --global user.email you@example.com
+#
+#After doing this, you may fix the identity used for this commit with:
+#
+#    git commit --amend --reset-author
+#
+
 
   - name: Oppretter "~/repos/notater/" 
     ansible.builtin.file:
@@ -180,86 +285,6 @@
     community.general.timezone:
       name: Europe/Oslo
 
-
-
-#  - name: Sjekker om Discord er installert
-#    stat:
-#      path: /usr/bin/discord
-#    register: discord_installed
-#
-#  - name: Laster ned Discord (.deb) til /tmp
-#    get_url:
-#      url: https://discord.com/api/download?platform=linux&format=deb
-#      dest: /tmp/discord.deb
-#    tags: download
-#    when: not discord_installed.stat.exists
-#
-#  - name: Installerer Discord fra .deb-fila
-#    become: yes
-#    apt:
-#      deb: /tmp/discord.deb
-#    tags: install
-#    when: not discord_installed.stat.exists
-#
-#  - name: Sjekker om VSCode er installert
-#    stat:
-#      path: /usr/bin/code
-#    register: vscode_installed
-#
-#  - name: Laster ned VS Code (.deb) til /tmp
-#    get_url:
-#      url: https://go.microsoft.com/fwlink/?LinkID=760868
-#      dest: /tmp/vscode.deb
-#    tags: download
-#    when: not vscode_installed.stat.exists
-#
-#  - name: Installerer VS Code fra .deb-fila
-#    become: yes
-#    apt:
-#      deb: /tmp/vscode.deb
-#    tags: install
-#    when: not vscode_installed.stat.exists
-#  
-#  - name: Sjekker om Steam er installert
-#    stat:
-#      path: /usr/bin/steam
-#    register: steam_installed
-#
-#  - name: Laster ned Steam (.deb) til /tmp
-#    get_url:
-#      url: https://cdn.akamai.steamstatic.com/client/installer/steam.deb
-#      dest: /tmp/steam.deb
-#    tags: download
-#    when: not steam_installed.stat.exists
-#
-#  - name: Installerer Steam fra .deb-fila
-#    become: yes
-#    apt:
-#      deb: /tmp/steam.deb
-#    tags: install
-#    when: not steam_installed.stat.exists
-
-## Forebygger feilmeldingen "fatal: Need to specify how to reconcile divergent branches" 
-## som Git spør om hvis jeg trekker ned et repo med "divergent branches"
-
-## Droppet
-
-#  - name: enabler autologin
-#    become: yes
-#    lineinfile:
-#      path: /etc/gdm3/daemon.conf
-#      regexp: '^#\s*AutomaticLoginEnable\s*=\s*true'
-#      line: 'AutomaticLoginEnable = true'
-#      backrefs: yes
-
-#  - name: angir autologin-brukernavn
-#    become: yes
-#    lineinfile:
-#      path: /etc/gdm3/daemon.conf
-#      regexp: '^#\s*AutomaticLogin\s*='
-#      line: "AutomaticLogin = {{ ansible_facts['env']['USER'] }}"
-#      backrefs: yes
-
 #  - name: Alle facts
 #    ansible.builtin.debug:
 #      var: ansible_facts
@@ -267,18 +292,3 @@
 #  - name: printtest
 #    ansible.builtin.debug:
 #      msg: "Current user: {{ ansible_facts['env']['USER'] }}"
-
-# Gir opp flathub midlertidig
-
-#  - name: Add the flathub flatpak repository remote to the user installation
-#    community.general.flatpak_remote:
-#      name: flathub
-#      state: present
-#      flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
-#      method: user
-
-#  - name: INstallerer GIMP fra Flathub
-#    community.general.flatpak:
-#      name: org.gimp.GIMP
-#      state: present    
-#      method: user
