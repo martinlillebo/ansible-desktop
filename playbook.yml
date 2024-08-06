@@ -143,15 +143,22 @@
       name: com.visualstudio.code
       state: present    
 
+  - name: Installerer Teams fra Flathub
+    become: yes
+    community.general.flatpak:
+      name: com.github.IsmaelMartinez.teams_for_linux
+      state: present    
+
+
 #  - name: Installerer XX fra Flathub
 #    become: yes
 #    community.general.flatpak:
 #      name: 
 #      state: present    
 
-  - name: Importerer GNOME-hurtigtaster
-    import_role:
-      name: gnome-hurtigtaster
+#  - name: Importerer GNOME-hurtigtaster
+#    import_role:
+#      name: gnome-hurtigtaster
 
   - name: Git-config
     community.general.git_config:
@@ -240,18 +247,18 @@
       dest: "{{ ansible_env.HOME }}/repos/dotfiler"
       version: master
 
-  - name: Sjekker om ~/.zshrc er en symlenke
+  - name: Henter info om ~/.zshrc
     ansible.builtin.stat:
       path: ~/.zshrc
     register: zshrc_stat    
 
-  - name: Sletter original .zshrc
+  - name: Sletter original .zshrc hvis den fins
     ansible.builtin.file:
       path: ~/.zshrc
       state: absent
     when: not zshrc_stat.stat.islnk
 
-  - name: symlenker .zshrc
+  - name: symlenker .zshrc til ~/repos/dotfiler/.zshrc
     ansible.builtin.file:
       src: ~/repos/dotfiler/.zshrc
       dest: ~/.zshrc
@@ -274,9 +281,9 @@
     community.general.timezone:
       name: Europe/Oslo
 
-#  - name: Alle facts
-#    ansible.builtin.debug:
-#      var: ansible_facts
+ # - name: Alle facts
+ #   ansible.builtin.debug:
+ #     var: ansible_facts
 
 #  - name: printtest
 #    ansible.builtin.debug:
