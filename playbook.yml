@@ -48,21 +48,12 @@
   - name: Inkluderer variabler
     ansible.builtin.include_vars: secret-vars.yml
 
-  - name: Legger inn AutoKey-config
-    import_role:
-      name: autokey-config
-
   - name: apt update og apt upgrade
     become: yes
     ansible.builtin.apt:
       update_cache: yes
       cache_valid_time: 3600 # hopper over update_cache om den er under en time gammel
       upgrade: yes
-
-#  Fjerner midlertidig for å spare tid
-#  - name: Legger inn sublimeless .desktop til ./local/share/applications
-#    import_role:
-#      name: sublimeless-desktop
 
   - name: Installerer masse programmer
     become: yes
@@ -301,3 +292,12 @@
 #  - name: printtest
 #    ansible.builtin.debug:
 #      msg: "Current user: {{ ansible_facts['env']['USER'] }}"
+
+#  - name: Legger inn AutoKey-config
+#    import_role:
+#      name: autokey-config
+
+#  Fjerner midlertidig for å spare tid
+#  - name: Legger inn sublimeless .desktop til ./local/share/applications
+#    import_role:
+#      name: sublimeless-desktop
