@@ -99,6 +99,7 @@
         - shutter
         - jq
         - neofetch
+        - ansible
 
   - name: Add Flathub repository
     become: yes
@@ -106,6 +107,18 @@
       name: flathub
       state: present
       flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+
+  - name: Installerer Zotero fra Flathub
+    become: yes
+    community.general.flatpak:
+      name: org.zotero.Zotero
+      state: present
+
+  - name: Installerer Standard Notes fra Flathub
+    become: yes
+    community.general.flatpak:
+      name:  org.standardnotes.standardnotes
+      state: present
 
   - name: Installerer Spotify fra Flathub
     become: yes
