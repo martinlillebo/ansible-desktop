@@ -14,63 +14,16 @@
 
   tasks:
 
-  - name: Endre locale-innstillinger
-    import_role:
-      name: locale-innstillinger
-
   - name: Inkluderer variabler
     ansible.builtin.include_vars: secret-vars.yml
-
-  - name: apt update og apt upgrade
-    become: yes
-    ansible.builtin.apt:
-      update_cache: yes
-      cache_valid_time: 3600 # hopper over update_cache om den er under en time gammel
-      upgrade: yes
 
   - name: Setter rett tidssone
     community.general.timezone:
       name: Europe/Oslo
 
-  - name: Installerer masse programmer
-    become: yes
-    ansible.builtin.apt:
-      state: present
-      name:
-        - virt-manager          # Til KVM
-        - qemu-system           # Til KVM
-        - libvirt-daemon-system # Til KVM
-        - git
-        - curl
-        - htop
-        - python3-pip
-        - python3-venv
-        - less
-        - lshw
-        - nano
-        - tmux
-        - tree
-        - usbutils
-        - ufw
-        - yamllint
-        - net-tools
-        - ncat
-        - ethtool
-        - host
-        - ncdu
-        - screenkey
-        - autokey-gtk # Autokey til GNOME
-        - zsh
-        - python3-psutil # Avhengighet til community.general.dconf. Burde ligge i venv
-        - vlc
-        - shutter
-        - jq
-        - neofetch
-        - ansible
-
-#  - name: Importerer GNOME-hurtigtaster
-#    import_role:
-#      name: gnome-hurtigtaster
+  - name: Oppdaterer + installerer terminalprogrammer
+    import_role:
+      name: terminalprogrammer
 
   - name: Installerer flatpaks
     import_role:
@@ -83,6 +36,10 @@
   - name: Legger inn dotfiler
     import_role:
       name: dotfiler
+
+  - name: Endre locale-innstillinger
+    import_role:
+      name: locale-innstillinger
 
   - name: Endrer skall til Zsh + OMZ
     import_role:
@@ -116,6 +73,11 @@
       type: ed25519
       comment: "lillebomartin@gmail.com"
     register: ssh_key
+
+#  - name: Importerer GNOME-hurtigtaster
+#    import_role:
+#      name: gnome-hurtigtaster
+
 
 
  # - name: Alle facts
