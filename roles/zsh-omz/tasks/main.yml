@@ -1,0 +1,28 @@
+  - name: Setter Zsh som standard skall
+    become: true
+    ansible.builtin.user:
+      name: "{{ ansible_facts['env']['USER'] }}"
+      shell: /bin/zsh
+
+  - name: Sjekker om Oh My Zsh er installert ennå
+    stat:
+      path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+    register: ohmyzsh_installed
+
+  - name: Laster ned OMZ installasjonsskript
+    get_url:
+      url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+      dest: /tmp/install_ohmyzsh.sh
+    when: not ohmyzsh_installed.stat.exists
+
+  - name: Installerer OMZ
+    command: sh /tmp/install_ohmyzsh.sh --unattended
+    register: ohmyzsh_result
+    failed_when: "'FAILED' in ohmyzsh_result.stderr"
+    when: not ohmyzsh_installed.stat.exists
+
+  - name: Henter Git-repoet som gir syntaksmarkering i Zsh
+    ansible.builtin.git:
+      repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+      dest: ~/zsh-syntax-highlighting
+      update: yes

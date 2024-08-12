@@ -14,36 +14,9 @@
 
   tasks:
 
-  - name: Legger til locale en_US.UTF-8
-    become: true
-    locale_gen:
-      name: en_US.UTF-8
-      state: present
-    register: locale
-
-  - name: Legger til locale C
-    become: true
-    locale_gen:
-      name: C
-      state: present
-    register: locale
-
-  - name: Legger til locale en_DK.UTF-8
-    become: true
-    locale_gen:
-      name: en_DK.UTF-8
-      state: present
-    register: locale
-
-  - name: setter LC_TIME=en_DK
-    become: yes
-    command: localectl set-locale LC_TIME=en_DK.UTF-8
-    when: locale.changed  
-
-  - name: setter LC_MESSAGES=C
-    become: yes
-    command: localectl set-locale LC_MESSAGES=C
-    when: locale.changed
+  - name: Endre locale-innstillinger
+    import_role:
+      name: locale-innstillinger
 
   - name: Inkluderer variabler
     ansible.builtin.include_vars: secret-vars.yml
@@ -55,6 +28,10 @@
       cache_valid_time: 3600 # hopper over update_cache om den er under en time gammel
       upgrade: yes
 
+  - name: Setter rett tidssone
+    community.general.timezone:
+      name: Europe/Oslo
+
   - name: Installerer masse programmer
     become: yes
     ansible.builtin.apt:
@@ -63,7 +40,6 @@
         - virt-manager          # Til KVM
         - qemu-system           # Til KVM
         - libvirt-daemon-system # Til KVM
-        - flatpak
         - git
         - curl
         - htop
@@ -92,95 +68,25 @@
         - neofetch
         - ansible
 
-  - name: Add Flathub repository
-    become: yes
-    community.general.flatpak_remote:
-      name: flathub
-      state: present
-      flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
-
-  - name: Installerer Zotero fra Flathub
-    become: yes
-    community.general.flatpak:
-      name: org.zotero.Zotero
-      state: present
-
-  - name: Installerer Standard Notes fra Flathub
-    become: yes
-    community.general.flatpak:
-      name:  org.standardnotes.standardnotes
-      state: present
-
-  - name: Installerer Spotify fra Flathub
-    become: yes
-    community.general.flatpak:
-      name:  com.spotify.Client
-      state: present
-
-  - name: Installerer Slack fra Flathub
-    become: yes
-    community.general.flatpak:
-      name:  com.slack.Slack
-      state: present
-
-  - name: Installerer Discord fra Flathub
-    become: yes
-    community.general.flatpak:
-      name:  com.discordapp.Discord
-      state: present
-
-  - name: Installerer GIMP fra Flathub
-    become: yes
-    community.general.flatpak:
-      name: org.gimp.GIMP
-      state: present    
-
-  - name: Installerer Steam fra Flathub
-    become: yes
-    community.general.flatpak:
-      name: com.valvesoftware.Steam
-      state: present    
-
-  - name: Installerer VSCode fra Flathub
-    become: yes
-    community.general.flatpak:
-      name: com.visualstudio.code
-      state: present    
-
-  - name: Installerer Teams fra Flathub
-    become: yes
-    community.general.flatpak:
-      name: com.github.IsmaelMartinez.teams_for_linux
-      state: present    
-
-
-#  - name: Installerer XX fra Flathub
-#    become: yes
-#    community.general.flatpak:
-#      name: 
-#      state: present    
-
 #  - name: Importerer GNOME-hurtigtaster
 #    import_role:
 #      name: gnome-hurtigtaster
 
-  - name: Git-config
-    community.general.git_config:
-      name: pull.rebase
-      scope: global
-      value: 'false'
+  - name: Installerer flatpaks
+    import_role:
+      name: flatpak-programmer
 
-  - name: Setter global Git user.name
-    community.general.git_config:
-      name: user.name
-      value: "Martin Lillebo"
-      scope: global
+  - name: Git-konfigurasjon: 
+    import_role:
+      name: git-config
 
-  - name: Setter global Git user.email
-    community.general.git_config:
-      name: user.email
-      value: "{{ e_mail_address }}"
-      scope: global
+  - name: Legger inn dotfiler
+    import_role:
+      name: dotfiler
+
+  - name: Endrer skall til Zsh + OMZ
+    import_role:
+      name: zsh-omz 
 
   - name: Oppretter "~/repos/notater/" 
     ansible.builtin.file:
@@ -211,79 +117,6 @@
       comment: "lillebomartin@gmail.com"
     register: ssh_key
 
-  - name: Setter Zsh som standard skall
-    become: true
-    ansible.builtin.user:
-      name: "{{ ansible_facts['env']['USER'] }}"
-      shell: /bin/zsh
-
-  - name: Sjekker om Oh My Zsh er installert ennå
-    stat:
-      path: "{{ ansible_env.HOME }}/.oh-my-zsh"
-    register: ohmyzsh_installed
-
-  - name: Laster ned OMZ installasjonsskript
-    get_url:
-      url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-      dest: /tmp/install_ohmyzsh.sh
-    when: not ohmyzsh_installed.stat.exists
-
-  - name: Installerer OMZ
-    command: sh /tmp/install_ohmyzsh.sh --unattended
-    register: ohmyzsh_result
-    failed_when: "'FAILED' in ohmyzsh_result.stderr"
-    when: not ohmyzsh_installed.stat.exists
-
-  - name: Henter Git-repoet som gir syntaksmarkering i Zsh
-    ansible.builtin.git:
-      repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
-      dest: ~/zsh-syntax-highlighting
-      update: yes
-
-  - name: Oppretter "~/repos/dotfiler/" 
-    ansible.builtin.file:
-      path: "~/repos/notater"
-      state: directory
-
-  - name: Kopierer inn dotfilene
-    ansible.builtin.git:
-      repo: "https://github.com/martinlillebo/dotfiler.git"
-      dest: "{{ ansible_env.HOME }}/repos/dotfiler"
-      version: master
-
-  - name: Henter info om ~/.zshrc
-    ansible.builtin.stat:
-      path: ~/.zshrc
-    register: zshrc_stat    
-
-  - name: Sletter original .zshrc hvis den fins
-    ansible.builtin.file:
-      path: ~/.zshrc
-      state: absent
-    when: not zshrc_stat.stat.islnk
-
-  - name: symlenker .zshrc til ~/repos/dotfiler/.zshrc
-    ansible.builtin.file:
-      src: ~/repos/dotfiler/.zshrc
-      dest: ~/.zshrc
-      state: link
-    when: not zshrc_stat.stat.islnk
-
-  - name: symlenker .vimrc
-    ansible.builtin.file:
-      src: ~/repos/dotfiler/.vimrc
-      dest: ~/.vimrc
-      state: link
-
-  - name: symlenker .nanorc
-    ansible.builtin.file:
-      src: ~/repos/dotfiler/.nanorc
-      dest: ~/.nanorc
-      state: link
-
-  - name: Setter rett tidssone
-    community.general.timezone:
-      name: Europe/Oslo
 
  # - name: Alle facts
  #   ansible.builtin.debug:

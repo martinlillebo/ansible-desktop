@@ -1,0 +1,30 @@
+  - name: Legger til locale en_US.UTF-8
+    become: true
+    locale_gen:
+      name: en_US.UTF-8
+      state: present
+    register: locale
+
+  - name: Legger til locale C
+    become: true
+    locale_gen:
+      name: C
+      state: present
+    register: locale
+
+  - name: Legger til locale en_DK.UTF-8
+    become: true
+    locale_gen:
+      name: en_DK.UTF-8
+      state: present
+    register: locale
+
+  - name: setter LC_TIME=en_DK
+    become: yes
+    command: localectl set-locale LC_TIME=en_DK.UTF-8
+    when: locale.changed  
+
+  - name: setter LC_MESSAGES=C
+    become: yes
+    command: localectl set-locale LC_MESSAGES=C
+    when: locale.changed

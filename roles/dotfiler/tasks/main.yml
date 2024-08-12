@@ -1,0 +1,41 @@
+  - name: Oppretter "~/repos/dotfiler/" 
+    ansible.builtin.file:
+      path: "~/repos/notater"
+      state: directory
+
+  - name: Kopierer inn dotfilene
+    ansible.builtin.git:
+      repo: "https://github.com/martinlillebo/dotfiler.git"
+      dest: "{{ ansible_env.HOME }}/repos/dotfiler"
+      version: master
+
+  - name: Henter info om ~/.zshrc
+    ansible.builtin.stat:
+      path: ~/.zshrc
+    register: zshrc_stat    
+
+  - name: Sletter original .zshrc hvis den fins
+    ansible.builtin.file:
+      path: ~/.zshrc
+      state: absent
+    when: not zshrc_stat.stat.islnk
+
+  - name: symlenker .zshrc til ~/repos/dotfiler/.zshrc
+    ansible.builtin.file:
+      src: ~/repos/dotfiler/.zshrc
+      dest: ~/.zshrc
+      state: link
+    when: not zshrc_stat.stat.islnk
+
+  - name: symlenker .vimrc
+    ansible.builtin.file:
+      src: ~/repos/dotfiler/.vimrc
+      dest: ~/.vimrc
+      state: link
+
+  - name: symlenker .nanorc
+    ansible.builtin.file:
+      src: ~/repos/dotfiler/.nanorc
+      dest: ~/.nanorc
+      state: link
+

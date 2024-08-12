@@ -1,0 +1,17 @@
+  - name: Setter git config pull.rebase = false
+    community.general.git_config:
+      name: pull.rebase
+      scope: global
+      value: 'false'
+
+  - name: Setter global Git user.name
+    community.general.git_config:
+      name: user.name
+      value: "Martin Lillebo"
+      scope: global
+
+  - name: Setter global Git user.email
+    community.general.git_config:
+      name: user.email
+      value: "{{ e_mail_address }}"
+      scope: global

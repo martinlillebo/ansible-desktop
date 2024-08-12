@@ -1,0 +1,73 @@
+  - name: Installerer Flathub
+    become: yes
+    ansible.builtin.apt:
+      state: present
+      name:
+        - flatpak
+
+  - name: Legger til Flathub-repo
+    become: yes
+    community.general.flatpak_remote:
+      name: flathub
+      state: present
+      flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+
+  - name: Installerer Signal fra Flathub
+    become: yes
+    community.general.flatpak:
+      name: org.signal.Signal
+      state: present
+
+  - name: Installerer Zotero fra Flathub
+    become: yes
+    community.general.flatpak:
+      name: org.zotero.Zotero
+      state: present
+
+  - name: Installerer Standard Notes fra Flathub
+    become: yes
+    community.general.flatpak:
+      name:  org.standardnotes.standardnotes
+      state: present
+
+  - name: Installerer Spotify fra Flathub
+    become: yes
+    community.general.flatpak:
+      name:  com.spotify.Client
+      state: present
+
+  - name: Installerer Slack fra Flathub
+    become: yes
+    community.general.flatpak:
+      name:  com.slack.Slack
+      state: present
+
+  - name: Installerer Discord fra Flathub
+    become: yes
+    community.general.flatpak:
+      name:  com.discordapp.Discord
+      state: present
+
+  - name: Installerer GIMP fra Flathub
+    become: yes
+    community.general.flatpak:
+      name: org.gimp.GIMP
+      state: present    
+
+  - name: Installerer Steam fra Flathub
+    become: yes
+    community.general.flatpak:
+      name: com.valvesoftware.Steam
+      state: present    
+
+  - name: Installerer VSCode fra Flathub
+    become: yes
+    community.general.flatpak:
+      name: com.visualstudio.code
+      state: present    
+
+  - name: Installerer Teams fra Flathub
+    become: yes
+    community.general.flatpak:
+      name: com.github.IsmaelMartinez.teams_for_linux
+      state: present    
