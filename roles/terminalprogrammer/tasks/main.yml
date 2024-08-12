@@ -1,0 +1,42 @@
+  - name: apt update og apt upgrade
+    become: yes
+    ansible.builtin.apt:
+      update_cache: yes
+      cache_valid_time: 3600 # hopper over update_cache om den er under en time gammel
+      upgrade: yes
+
+  - name: Installerer masse programmer
+    become: yes
+    ansible.builtin.apt:
+      state: present
+      name:
+        - virt-manager          # Til KVM
+        - qemu-system           # Til KVM
+        - libvirt-daemon-system # Til KVM
+        - git
+        - curl
+        - htop
+        - python3-pip
+        - python3-venv
+        - less
+        - lshw
+        - nano
+        - tmux
+        - tree
+        - usbutils
+        - ufw
+        - yamllint
+        - net-tools
+        - ncat
+        - ethtool
+        - host
+        - ncdu
+        - screenkey
+        - autokey-gtk # Autokey til GNOME
+        - zsh
+        - python3-psutil # Avhengighet til community.general.dconf. Burde ligge i venv
+        - vlc
+        - shutter
+        - jq
+        - neofetch
+        - ansible
