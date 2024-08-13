@@ -16,7 +16,6 @@
     remote_src: yes
     creates: ~/Downloads/sublimeless_zk-pre-0.9-linux/ 
 
-
 - name: Kopierer sublimeless .desktop-filen til ~/.local/share/applications
   copy:
     src: sublimeless.desktop

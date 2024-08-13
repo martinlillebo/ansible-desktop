@@ -1,0 +1,11 @@
+  - name: Sjekker om ~/.ssh fins
+    stat:
+      path: "{{ ansible_env.HOME }}/.ssh/"
+    register: ssh_fins
+  
+  - name: Oppretter et SSH-nøkkelpar
+    ansible.builtin.openssh_keypair:
+      path: ~/.ssh/id_ed25519
+      type: ed25519
+      comment: "lillebomartin@gmail.com"
+    register: ssh_key

@@ -1,0 +1,16 @@
+  - name: Oppretter "~/repos/notater/" 
+    ansible.builtin.file:
+      path: "~/repos/notater"
+      state: directory
+
+  - name: Sjekker om notatblokka fins
+    stat:
+      path: "{{ ansible_env.HOME }}/repos/notater/.git/"
+    register: notater_fins
+
+  - name: Kopierer inn notatblokka
+    ansible.builtin.git:
+      repo: "https://{{ github_username }}:{{ github_access_token }}@github.com/martinlillebo/notater.git"
+      dest: "{{ ansible_env.HOME }}/repos/notater"
+      version: master
+    when: not notater_fins.stat.exists

@@ -12,7 +12,21 @@
 #      prompt: Lim inn GitHub access token (ctrl + shift + V)
 #      private: true
 
-  tasks:
+  roles:
+    - locale-innstillinger
+    - gnome-config
+#    - autokey-config
+    - ssh-innstillinger
+    - terminalprogrammer
+    - zsh-omz
+    - flatpak-programmer
+    - git-config
+    - clone-notater
+    - clone-dotfiler
+    - clone-ansible-desktop
+    - sublimeless-desktop
+
+  pre_tasks:
 
   - name: Inkluderer variabler
     ansible.builtin.include_vars: secret-vars.yml
@@ -20,79 +34,3 @@
   - name: Setter rett tidssone
     community.general.timezone:
       name: Europe/Oslo
-
-  - name: Oppdaterer + installerer terminalprogrammer
-    import_role:
-      name: terminalprogrammer
-
-  - name: Installerer flatpaks
-    import_role:
-      name: flatpak-programmer
-
-  - name: Git-konfigurasjon: 
-    import_role:
-      name: git-config
-
-  - name: Legger inn dotfiler
-    import_role:
-      name: dotfiler
-
-  - name: Endre locale-innstillinger
-    import_role:
-      name: locale-innstillinger
-
-  - name: Endrer skall til Zsh + OMZ
-    import_role:
-      name: zsh-omz 
-
-  - name: Oppretter "~/repos/notater/" 
-    ansible.builtin.file:
-      path: "~/repos/notater"
-      state: directory
-
-  - name: Sjekker om notatblokka fins
-    stat:
-      path: "{{ ansible_env.HOME }}/repos/notater/.git/"
-    register: notater_fins
-
-  - name: Kopierer inn notatblokka
-    ansible.builtin.git:
-      repo: "https://{{ github_username }}:{{ github_access_token }}@github.com/martinlillebo/notater.git"
-      dest: "{{ ansible_env.HOME }}/repos/notater"
-      version: master
-    when: not notater_fins.stat.exists
-
-  - name: Sjekker om ~/.ssh fins
-    stat:
-      path: "{{ ansible_env.HOME }}/.ssh/"
-    register: ssh_fins
-  
-  - name: Opprettet et SSH-nøkkelpar
-    ansible.builtin.openssh_keypair:
-      path: ~/.ssh/id_ed25519
-      type: ed25519
-      comment: "lillebomartin@gmail.com"
-    register: ssh_key
-
-#  - name: Importerer GNOME-hurtigtaster
-#    import_role:
-#      name: gnome-hurtigtaster
-
-
-
- # - name: Alle facts
- #   ansible.builtin.debug:
- #     var: ansible_facts
-
-#  - name: printtest
-#    ansible.builtin.debug:
-#      msg: "Current user: {{ ansible_facts['env']['USER'] }}"
-
-#  - name: Legger inn AutoKey-config
-#    import_role:
-#      name: autokey-config
-
-#  Fjerner midlertidig for å spare tid
-#  - name: Legger inn sublimeless .desktop til ./local/share/applications
-#    import_role:
-#      name: sublimeless-desktop

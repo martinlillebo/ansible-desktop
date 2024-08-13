@@ -14,4 +14,4 @@ name='Terminal'
 [custom-keybindings/custom2]
 binding='<Shift><Alt>s'
 command='shutter -s'
-name='Skjermbilde - del av skjermen' # Funker ikke inni selve VM-en
+name='Skjermbilde - del av skjermen'

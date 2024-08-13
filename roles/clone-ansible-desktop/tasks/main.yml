@@ -1,0 +1,16 @@
+  - name: Oppretter "~/repos/ansible-desktop/" 
+    ansible.builtin.file:
+      path: "~/repos/ansible-desktop"
+      state: directory
+
+  - name: Sjekker om ansible-desktop repo fins
+    stat:
+      path: "{{ ansible_env.HOME }}/repos/ansible-desktop/.git/"
+    register: ansible_desktop_fins
+
+  - name: Kopierer inn ansible-desktop repo
+    ansible.builtin.git:
+      repo: "https://{{ github_username }}:{{ github_access_token }}@github.com/martinlillebo/ansible-desktop.git"
+      dest: "{{ ansible_env.HOME }}/repos/ansible-desktop"
+      version: main
+    when: not ansible_desktop_fins.stat.exists
