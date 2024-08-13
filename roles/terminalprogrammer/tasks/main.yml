@@ -2,7 +2,6 @@
     become: yes
     ansible.builtin.apt:
       update_cache: yes
-      cache_valid_time: 3600 # hopper over update_cache om den er under en time gammel
       upgrade: yes
 
   - name: Installerer masse programmer

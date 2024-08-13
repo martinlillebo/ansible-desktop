@@ -14,10 +14,10 @@
 
   roles:
     - locale-innstillinger
+    - terminalprogrammer
     - gnome-config
 #    - autokey-config
     - ssh-innstillinger
-    - terminalprogrammer
     - zsh-omz
     - flatpak-programmer
     - git-config
