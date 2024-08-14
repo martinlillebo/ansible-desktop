@@ -28,6 +28,38 @@
 
   pre_tasks:
 
+  - name: Installerer Keyd
+    become: yes
+    ansible.builtin.git:
+      repo: https://github.com/rvaiya/keyd.git
+      dest: ~/keyd
+      version: v2.5.0
+
+  - name: Build Keyd
+    become: yes
+    ansible.builtin.make:
+      chdir: ~/keyd
+
+  - name: Install Keyd
+    become: yes
+    ansible.builtin.command:
+      cmd: make install
+      chdir: ~/keyd
+
+  - name: Enable and start Keyd service
+    become: yes
+    ansible.builtin.systemd:
+      name: keyd
+      enabled: yes
+      state: started
+
+
+#- name: Git checkout
+#  ansible.builtin.git:
+#    repo: 'https://foosball.example.org/path/to/repo.git'
+#    dest: /srv/checkout
+#    version: release-0.22
+
   - name: Inkluderer variabler
     ansible.builtin.include_vars: secret-vars.yml
 
