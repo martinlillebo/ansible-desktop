@@ -1,0 +1,32 @@
+  - name: Sjekker om /usr/local/bin/keyd fins
+    stat:
+      path: /usr/local/bin/keyd
+    register: keyd_installed
+
+  - name: Installerer Keyd
+    become: yes
+    ansible.builtin.git:
+      repo: https://github.com/rvaiya/keyd.git
+      dest: ~/keyd
+      version: v2.5.0
+    when: not keyd_installed.stat.exists
+
+  - name: Bygger Keyd
+    become: yes
+    ansible.builtin.make:
+      chdir: ~/keyd
+    when: not keyd_installed.stat.exists
+
+  - name: Installerer Keyd
+    become: yes
+    ansible.builtin.command:
+      cmd: make install
+      chdir: ~/keyd
+    when: not keyd_installed.stat.exists
+
+  - name: Enabler og starter Keyd-servicefilen
+    become: yes
+    ansible.builtin.systemd:
+      name: keyd
+      enabled: yes
+      state: started

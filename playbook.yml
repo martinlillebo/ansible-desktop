@@ -13,46 +13,21 @@
 #      private: true
 
   roles:
-    - locale-innstillinger
     - terminalprogrammer
-    - gnome-config
+#    - locale-innstillinger
+#    - gnome-config
 #    - autokey-config
-    - ssh-innstillinger
-    - zsh-omz
-    - flatpak-programmer
-    - git-config
-    - clone-notater
-    - clone-dotfiler
-    - clone-ansible-desktop
-    - sublimeless-desktop
+#    - ssh-innstillinger
+#    - zsh-omz
+#    - flatpak-programmer
+#    - git-config
+#    - clone-notater
+#    - clone-dotfiler
+#    - clone-ansible-desktop
+#    - sublimeless-desktop
+    - keyd-installering
 
   pre_tasks:
-
-  - name: Installerer Keyd
-    become: yes
-    ansible.builtin.git:
-      repo: https://github.com/rvaiya/keyd.git
-      dest: ~/keyd
-      version: v2.5.0
-
-  - name: Build Keyd
-    become: yes
-    ansible.builtin.make:
-      chdir: ~/keyd
-
-  - name: Install Keyd
-    become: yes
-    ansible.builtin.command:
-      cmd: make install
-      chdir: ~/keyd
-
-  - name: Enable and start Keyd service
-    become: yes
-    ansible.builtin.systemd:
-      name: keyd
-      enabled: yes
-      state: started
-
 
 #- name: Git checkout
 #  ansible.builtin.git:
