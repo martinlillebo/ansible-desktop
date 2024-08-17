@@ -11,11 +11,7 @@
       path: /etc/apt/keyrings
       state: directory
       mode: '0755'
-
-  - name: Alle facts
-    ansible.builtin.debug:
-      var: ansible_facts
-
+  
   - name: Laster ned Docker som GPG-nøkkel
     become: yes
     ansible.builtin.get_url:

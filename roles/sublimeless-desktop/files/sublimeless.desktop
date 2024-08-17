@@ -1,4 +1,4 @@
 [Desktop Entry]
 Name=Sublimeless
-Exec=/usr/local/bin/sublimeless/sublimeless_zk %f
+Exec=/home/ml/Downloads/sublimeless_zk-pre-0.9-linux/sublimeless_zk %f
 Type=Application

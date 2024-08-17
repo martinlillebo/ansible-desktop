@@ -14,19 +14,19 @@
 
   roles:
     - terminalprogrammer
-    - sublimeless-desktop
-    - docker-installering
-#    - locale-innstillinger
-#    - gnome-config
-#    - autokey-config
-#    - ssh-innstillinger
+    - git-config
+    - ssh-innstillinger
+    - locale-innstillinger
     - zsh-omz
-#    - flatpak-programmer
-#    - git-config
-#    - clone-notater
+    - gnome-config
+    - clone-notater
     - clone-dotfiler
-#    - clone-ansible-desktop
+    - clone-ansible-desktop
+    - autokey-config
+    - docker-installering
     - keyd-installering
+    - flatpak-programmer
+    - sublimeless-desktop
 
   pre_tasks:
 
