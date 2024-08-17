@@ -18,11 +18,11 @@
 #    - gnome-config
 #    - autokey-config
 #    - ssh-innstillinger
-#    - zsh-omz
+    - zsh-omz
 #    - flatpak-programmer
 #    - git-config
 #    - clone-notater
-#    - clone-dotfiler
+    - clone-dotfiler
 #    - clone-ansible-desktop
 #    - sublimeless-desktop
     - keyd-installering

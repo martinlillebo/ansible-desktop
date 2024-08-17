@@ -12,20 +12,20 @@
   - name: Henter info om ~/.zshrc
     ansible.builtin.stat:
       path: ~/.zshrc
-    register: zshrc_stat    
+    register: zshrc    
 
   - name: Sletter original .zshrc hvis den fins
     ansible.builtin.file:
       path: ~/.zshrc
       state: absent
-    when: not zshrc_stat.stat.islnk
+    when: not zshrc.stat.islnk
 
   - name: symlenker .zshrc til ~/repos/dotfiler/.zshrc
     ansible.builtin.file:
       src: ~/repos/dotfiler/.zshrc
       dest: ~/.zshrc
       state: link
-    when: not zshrc_stat.stat.islnk
+    when: not zshrc.stat.islnk
 
   - name: symlenker .vimrc
     ansible.builtin.file:
@@ -39,3 +39,15 @@
       dest: ~/.nanorc
       state: link
 
+  - name: Henter info om /etc/keyd/default.conf
+    ansible.builtin.stat:
+      path: /etc/keyd/
+    register: etc_keyd   
+
+  - name: symlenker /etc/keyd/default.conf til ~/repos/dotfiler/keyd/default.conf
+    become: yes
+    ansible.builtin.file:
+      src: "{{ ansible_env.HOME }}/repos/dotfiler/keyd/default.conf"
+      dest: /etc/keyd/default.conf
+      state: link
+    when: etc_keyd.stat.exists and etc_keyd.stat.isdir
