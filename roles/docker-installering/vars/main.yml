@@ -1,0 +1,2 @@
+# docker-installering/vars/main.yml
+docker_architecture: "{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}"
