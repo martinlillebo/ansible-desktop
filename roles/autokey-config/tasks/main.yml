@@ -1,4 +1,31 @@
-- name: Omgjør Caps Lock-tasten til vanlig konfigurerbar autokey-tast
-  copy:
-    src: .xmodmap
-    dest: ~/.xmodmap
+  - name: printtest
+    ansible.builtin.debug:
+      msg: "{{ ansible_env.HOME }}/.config/autokey"
+
+  - name: Henter info om .config/autokey/
+    stat:
+      path: "{{ ansible_env.HOME }}/.config/autokey"
+    register: autokey_mappe
+
+  - name: Sletter original .config/autokey/ hvis den fins
+    ansible.builtin.file:
+      path: "{{ ansible_env.HOME }}/.config/autokey"
+      state: absent
+    when: autokey_mappe.stat.exists and not autokey_mappe.stat.islnk
+
+  - name: Sletter original ~/.config/autokey/ hvis den fins
+    ansible.builtin.file:
+      path: "{{ ansible_env.HOME }}/.config/autokey"
+      state: absent
+    when: autokey_mappe.stat.exists and not autokey_mappe.stat.islnk
+
+  - name: printtest
+    ansible.builtin.debug:
+      msg: "Current user: {{ autokey_mappe }}"
+
+
+  - name: symlenker ~/.config/autokey/ til ~/repos/dotfiler/autokey/
+    ansible.builtin.file:
+      src: "{{ ansible_env.HOME }}/repos/dotfiler/autokey"
+      dest: ~/.config/autokey
+      state: link

@@ -13,6 +13,7 @@
 #      private: true
 
   roles:
+    - autokey-config
     - terminalprogrammer
     - git-config
     - ssh-innstillinger
@@ -22,7 +23,6 @@
     - clone-notater
     - clone-dotfiler
     - clone-ansible-desktop
-    - autokey-config
     - docker-installering
     - keyd-installering
     - flatpak-programmer
