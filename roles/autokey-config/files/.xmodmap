@@ -1,4 +1,0 @@
-clear Lock
-remove mod4 = Hyper_L
-keycode 66 = F13
-add Lock = Hyper_L
