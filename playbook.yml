@@ -13,7 +13,6 @@
 #      private: true
 
   roles:
-    - autokey-config
     - terminalprogrammer
     - git-config
     - ssh-innstillinger
@@ -24,9 +23,10 @@
     - clone-dotfiler
     - clone-ansible-desktop
     - docker-installering
-    - keyd-installering
     - flatpak-programmer
     - sublimeless-desktop
+    - keyd-installering
+    - autokey-config
 
   pre_tasks:
 
