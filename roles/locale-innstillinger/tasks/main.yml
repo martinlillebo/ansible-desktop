@@ -5,12 +5,12 @@
       state: present
     register: locale
 
-  - name: Legger til locale C
-    become: true
-    locale_gen:
-      name: C
-      state: present
-    register: locale
+#  - name: Legger til locale C
+#    become: true
+#    locale_gen:
+#      name: C
+#      state: present
+#    register: locale
 
   - name: Legger til locale en_DK.UTF-8
     become: true
