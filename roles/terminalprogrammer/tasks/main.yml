@@ -39,3 +39,4 @@
         - jq
         - neofetch
         - ansible
+        - arp-scan
