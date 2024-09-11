@@ -9,34 +9,35 @@
     ansible.builtin.apt:
       state: present
       name:
-        - virt-manager          # Til KVM
-        - qemu-system           # Til KVM
-        - libvirt-daemon-system # Til KVM
-        - git
+        - ansible
+        - arp-scan
+        - autokey-gtk # Autokey til GNOME
         - curl
+        - ethtool
+        - git
+        - host
         - htop
-        - python3-pip
-        - python3-venv
+        - jq
         - less
+        - libvirt-daemon-system # Til KVM
         - lshw
         - nano
+        - neofetch
+        - ncat
+        - ncdu
+        - net-tools
+        - python3-pip
+        - python3-psutil # Avhengighet til community.general.dconf. Burde ligge i venv
+        - python3-venv
+        - qemu-system           # Til KVM
+        - shutter
+        - screenkey
+        - terminator
         - tmux
         - tree
         - usbutils
         - ufw
-        - yamllint
-        - net-tools
-        - ncat
-        - ethtool
-        - host
-        - ncdu
-        - screenkey
-        - autokey-gtk # Autokey til GNOME
-        - zsh
-        - python3-psutil # Avhengighet til community.general.dconf. Burde ligge i venv
+        - virt-manager          # Til KVM
         - vlc
-        - shutter
-        - jq
-        - neofetch
-        - ansible
-        - arp-scan
+        - yamllint
+        - zsh
