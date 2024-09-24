@@ -4,13 +4,6 @@
   become: no
   vars:
     github_username: "martinlillebo"
-#  vars_prompt:
-#    - name: github_username
-#      prompt: GitHub-brukernavn
-#      private: false
-#    - name: github_access_token
-#      prompt: Lim inn GitHub access token (ctrl + shift + V)
-#      private: true
 
   roles:
     - terminalprogrammer
