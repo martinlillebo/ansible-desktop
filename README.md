@@ -21,3 +21,4 @@ Ansible-config av desktopen min, vanligvis Debian/GNOME3
     - zsh-omz
 
 - Se gjennom `terminalprogrammer`-rollen og kommenter vekk uinteressante programmer
+- ...se gjennom alt annet også :) 
