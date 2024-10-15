@@ -14,7 +14,6 @@
         - autokey-gtk # Autokey til GNOME
         - curl
         - ethtool
-        - etcher
         - git
         - host
         - htop
