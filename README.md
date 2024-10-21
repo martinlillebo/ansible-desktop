@@ -1,6 +1,8 @@
 # ansible-desktop
 Ansible-config av desktopen min, vanligvis Debian/GNOME3
 
+Kan modifiseres av andre som vil sikre sin egen maskinconfig. til den dagen man skal eller må bytte personlig datamaskin
+
 - Forberedelser før kjøring: 
     - Opprett en `inventory-ini` med riktig maskinreferanse
     - Kommenter vekk ev. uinteressante roles
