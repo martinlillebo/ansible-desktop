@@ -4,7 +4,7 @@ Ansible-config av desktopen min, vanligvis Debian/GNOME3
 - Forberedelser før kjøring: 
     - Opprett en `inventory-ini` med riktig maskinreferanse
     - Kommenter vekk ev. uinteressante roles
-    - Test gjerne på en VM først, før du tukler til en ekte maskin
+    - Test gjerne på en VM først for å sikre at alt blir som du ønsker, før du prøver deg på en ekte datamaskin hvor det ikke fins noen angreknapp
 
 - Kjøres slik: 
     - `ansible-playbook -i inventory.ini playbook.yml --diff`
