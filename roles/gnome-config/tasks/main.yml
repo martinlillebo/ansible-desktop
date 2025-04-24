@@ -40,3 +40,14 @@
     line: 'WaylandEnable=false'
     insertafter: '^\[daemon\]'
     create: yes
+
+- name: Sjekker dconf-verdi
+  become: false
+  shell: dconf read /org/gnome/desktop/wm/keybindings/show-desktop
+  register: current_binding
+  changed_when: false
+
+- name: Setter Super+D til å vise skrivebordet vha dconf
+  become: false
+  shell: dconf write /org/gnome/desktop/wm/keybindings/show-desktop "['<Super>d']"
+  when: current_binding.stdout != "['<Super>d']"
