@@ -16,7 +16,8 @@
 #    - clone-dotfiler
 #    - clone-ansible-desktop
 #    - docker-installering
-    - flatpak-programmer
+#    - flatpak-programmer
+    - etc-config
 #    - sublimeless-desktop
 #    - keyd-installering
 #    - autokey-config

@@ -1,0 +1,17 @@
+- name: Deaktiver hvilemodus når lokket stenges
+  become: true
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    regexp: "^#?{{ item.key }}=.*"
+    line: "{{ item.key }}=ignore"
+    state: present
+  loop:
+    - { key: 'HandleLidSwitch' }
+    - { key: 'HandleLidSwitchExternalPower' }
+    - { key: 'HandleLidSwitchDocked' }
+
+#- name: Restarter systemd-logind to apply lid switch config
+#  systemd:
+#    name: systemd-logind
+#    state: restarted
+#  become: true
