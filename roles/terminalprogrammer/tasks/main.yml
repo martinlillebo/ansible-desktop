@@ -30,6 +30,7 @@
         - python3-psutil # Avhengighet til community.general.dconf. Burde ligge i venv
         - python3-venv
         - qemu-system           # Til KVM
+        - ripgrep
         - shutter
         - screenkey
         - terminator
