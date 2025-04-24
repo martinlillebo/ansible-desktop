@@ -11,12 +11,12 @@
 #    - ssh-innstillinger
 #    - locale-innstillinger
 #    - zsh-omz
-    - gnome-config
+#    - gnome-config
 #    - clone-notater
 #    - clone-dotfiler
 #    - clone-ansible-desktop
 #    - docker-installering
-#    - flatpak-programmer
+    - flatpak-programmer
 #    - sublimeless-desktop
 #    - keyd-installering
 #    - autokey-config
