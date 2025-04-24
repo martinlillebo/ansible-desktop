@@ -14,6 +14,7 @@
         - autokey-gtk # Autokey til GNOME
         - curl
         - ethtool
+        - emacs
         - git
         - host
         - htop
@@ -21,6 +22,7 @@
         - less
         - libvirt-daemon-system # Til KVM
         - lshw
+        - locate
         - nano
         - neofetch
         - ncat
