@@ -6,21 +6,21 @@
     github_username: "martinlillebo"
 
   roles:
-#    - terminalprogrammer
-#    - git-config
-#    - ssh-innstillinger
-#    - locale-innstillinger
-#    - zsh-omz
-#    - gnome-config
-#    - clone-notater
+    - terminalprogrammer
+    - git-config
+    - ssh-innstillinger
+    - locale-innstillinger
+    - zsh-omz
+    - gnome-config
+    - clone-notater
     - clone-dotfiler
-#    - clone-ansible-desktop
-#    - docker-installering
-#    - flatpak-programmer
-#    - etc-config
-#    - sublimeless-desktop
-#    - keyd-installering
-#    - autokey-config
+    - clone-ansible-desktop
+    - docker-installering
+    - flatpak-programmer
+    - etc-config
+    - sublimeless-desktop
+    - keyd-installering
+    - autokey-config
 
   pre_tasks:
 
