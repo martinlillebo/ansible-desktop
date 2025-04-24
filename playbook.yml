@@ -13,11 +13,11 @@
 #    - zsh-omz
 #    - gnome-config
 #    - clone-notater
-#    - clone-dotfiler
+    - clone-dotfiler
 #    - clone-ansible-desktop
 #    - docker-installering
 #    - flatpak-programmer
-    - etc-config
+#    - etc-config
 #    - sublimeless-desktop
 #    - keyd-installering
 #    - autokey-config

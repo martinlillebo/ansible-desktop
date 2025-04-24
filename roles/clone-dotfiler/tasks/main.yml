@@ -33,6 +33,17 @@
       dest: ~/.vimrc
       state: link
 
+  - name: Oppretter configmappe for terminator "~/.config/terminator/" 
+    ansible.builtin.file:
+      path: "~/.config/terminator"
+      state: directory
+
+  - name: symlenker terminator conf
+    ansible.builtin.file:
+      src: ~/repos/dotfiler/terminator/config
+      dest: ~/.config/terminator/config
+      state: link
+
   - name: symlenker .nanorc
     ansible.builtin.file:
       src: ~/repos/dotfiler/.nanorc
