@@ -31,3 +31,12 @@
   dconf:
     key: /org/gnome/desktop/calendar/show-weekdate
     value: 'true'
+
+- name: Deaktiverer Wayland og bruker X11 i stedet for
+  become: true
+  lineinfile:
+    path: /etc/gdm3/daemon.conf
+    regexp: '^\s*#?\s*WaylandEnable=.*'
+    line: 'WaylandEnable=false'
+    insertafter: '^\[daemon\]'
+    create: yes

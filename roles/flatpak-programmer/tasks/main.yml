@@ -60,11 +60,12 @@
       name: com.valvesoftware.Steam
       state: present    
 
-  - name: Installerer VSCode fra Flathub
+  - name: Installerer Shortwave fra Flathub
     become: yes
     community.general.flatpak:
-      name: com.visualstudio.code
+      name: de.haeckerfelix.Shortwave
       state: present    
+
 
   - name: Installerer Teams fra Flathub
     become: yes
