@@ -1,0 +1,10 @@
+  - name: Installerer Emacs
+    become: yes
+    ansible.builtin.apt:
+      state: present
+      name:
+        - emacs
+        - git
+        - ripgrep
+        - fd-find
+  

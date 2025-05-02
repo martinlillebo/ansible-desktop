@@ -21,6 +21,7 @@
     - sublimeless-desktop
     - keyd-installering
     - autokey-config
+    - emacs
 
   pre_tasks:
 
