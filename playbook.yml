@@ -22,7 +22,7 @@
     - keyd-installering
     - autokey-config
     - emacs
-    - emacs-purge
+  #  - emacs-purge
 
   pre_tasks:
 
