@@ -7,4 +7,24 @@
         - git
         - ripgrep
         - fd-find
+        - shellcheck
   
+  - name: Kloner Doom til ~/.config/emacs
+    git:
+      repo: https://github.com/doomemacs/doomemacs
+      dest: "{{ ansible_env.HOME }}/.config/emacs"
+      depth: 1
+      version: master
+
+  - name: Symlenker inn ~/.config/doom fra dotfiler-repo
+    file:
+      src: "~/repos/dotfiler/doom"
+      dest: "{{ ansible_env.HOME }}/.config/doom"
+      state: link
+      force: true
+
+  - name: Kjører doom install
+    shell: "{{ ansible_env.HOME }}/.config/emacs/bin/doom install --force"
+    args:
+      creates: "{{ ansible_env.HOME }}/.doom.d/init.el"
+

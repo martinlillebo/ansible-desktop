@@ -1,0 +1,27 @@
+- name: Remove Emacs packages
+  become: true
+  apt:
+    name:
+      - emacs-bin-common
+      - emacs-common
+      - emacs-el
+      - emacs-gtk
+      - emacs
+    state: absent
+    purge: true
+
+- name: Autoremove orphaned packages
+  become: true
+  apt:
+    autoremove: yes
+    purge: yes
+
+- name: Remove user Emacs config and cache dirs
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ ansible_env.HOME }}/.emacs"
+    - "{{ ansible_env.HOME }}/.emacs.d"
+    - "{{ ansible_env.HOME }}/.config/emacs"
+    - "{{ ansible_env.HOME }}/.config/doom"
