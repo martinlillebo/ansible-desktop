@@ -19,6 +19,7 @@
         - host
         - htop
         - jq
+        - kolourpaint
         - less
         - libvirt-daemon-system # Til KVM
         - lshw
