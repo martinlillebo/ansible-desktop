@@ -44,6 +44,12 @@
       dest: ~/.config/terminator/config
       state: link
 
+  - name: symlenker autostart-mappa
+    ansible.builtin.file:
+      src: ~/repos/dotfiler/autostart
+      dest: ~/.config/autostart
+      state: link
+
   - name: symlenker .nanorc
     ansible.builtin.file:
       src: ~/repos/dotfiler/.nanorc
