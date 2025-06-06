@@ -1,3 +1,4 @@
+  # Brukes til å omdisponere capslock-tasten til noe annet
   - name: Sjekker om /usr/local/bin/keyd fins
     stat:
       path: /usr/local/bin/keyd
