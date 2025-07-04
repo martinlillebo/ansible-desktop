@@ -60,21 +60,8 @@
       name: com.valvesoftware.Steam
       state: present    
 
-  - name: Installerer Shortwave fra Flathub
-    become: yes
-    community.general.flatpak:
-      name: de.haeckerfelix.Shortwave
-      state: present    
-
   - name: Installerer Teams fra Flathub
     become: yes
     community.general.flatpak:
       name: com.github.IsmaelMartinez.teams_for_linux
-      state: present    
-
-  - name: Installerer Firefox fra Flathub
-    become: yes
-    community.general.flatpak:
-      name: org.mozilla.firefox
-      state: present    
-
+      state: present

@@ -24,6 +24,7 @@
         - libvirt-daemon-system # Til KVM
         - lshw
         - locate
+        - mpv # til EMMS i Emacs
         - nano
         - neofetch
         - ncat
@@ -46,6 +47,7 @@
         - yamllint
         - zsh
         - xclip
+        - xtrlock
 
   - name: Add Microsoft GPG key
     become: yes
