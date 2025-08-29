@@ -1,0 +1,51 @@
+---
+# tasks/main.yml
+
+- name: Ensure APT keyring directory exists
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Download Mozilla APT repository signing key
+  get_url:
+    url: https://packages.mozilla.org/apt/repo-signing-key.gpg
+    dest: /etc/apt/keyrings/packages.mozilla.org.asc
+    mode: '0644'
+
+- name: Verify Mozilla signing key fingerprint
+  command: >
+    gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozilla.org.asc
+  register: gpg_key
+  changed_when: false
+
+- name: Fail if fingerprint does not match expected value
+  fail:
+    msg: "Verification failed: Fingerprint does not match expected value"
+  when: "'35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3' not in gpg_key.stdout"
+
+- name: Add Mozilla APT repository
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main"
+    filename: "mozilla"
+
+- name: Configure APT pinning for Mozilla repo
+  become: true
+  copy:
+    dest: /etc/apt/preferences.d/mozilla
+    content: |
+      Package: *
+      Pin: origin packages.mozilla.org
+      Pin-Priority: 1000
+    mode: '0644'
+
+- name: Update apt cache
+  become: true
+  apt:
+    update_cache: yes
+
+- name: Install Firefox
+  become: true
+  apt:
+    name: firefox
+    state: present
