@@ -68,3 +68,22 @@
       dest: /etc/keyd/default.conf
       state: link
     when: etc_keyd.stat.exists and etc_keyd.stat.isdir
+
+  - name: Henter info om ~/.config/ansible/ansible.cfg
+    ansible.builtin.stat:
+      path: ~/.config/ansible/ansible.cfg
+    register: ansiblecfg
+
+  - name: Sletter original ansible.cfg hvis den fins
+    ansible.builtin.file:
+      path: ~/.config/ansible/ansible.cfg
+      state: absent
+    when: not ansiblecfg.stat.islnk
+
+  - name: Symlenker ansible.cfg til ~/repos/dotfiler/ansible/ansible.cfg
+    ansible.builtin.file:
+      src: ~/repos/dotfiler/ansible/ansible.cfg
+      dest: ~/.config/ansible/ansible.cfg
+      state: link
+      force: true
+    when: not ansiblecfg.stat.islnk

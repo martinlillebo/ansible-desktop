@@ -7,21 +7,22 @@
 
   roles:
     - terminalprogrammer
-    - git-config
-    - ssh-innstillinger
-    - locale-innstillinger
-    - zsh-omz
-    - gnome-config
-    - clone-notater
-    - clone-dotfiler
-    - clone-ansible-desktop
-    - docker-installering
-    - flatpak-programmer
-    - etc-config
-    - sublimeless-desktop
-    - autokey-config
-    - emacs
-  #  - emacs-purge
+    # - git-config
+    # - ssh-innstillinger
+    # - locale-innstillinger
+    # - zsh-omz
+    # - gnome-config
+    # - clone-notater
+    # - clone-dotfiler
+    # - clone-ansible-desktop
+    # - firefox
+    # - docker-installering
+    # - flatpak-programmer
+    # - etc-config
+    # - sublimeless-desktop
+    # - autokey-config
+    # - emacs
+    # - emacs-purge
 
   pre_tasks:
 
