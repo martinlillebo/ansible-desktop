@@ -12,6 +12,7 @@
         - ansible
         - arp-scan
         - autokey-gtk # Autokey til GNOME
+        - can-utils
         - curl
         - ethtool
         - emacs
